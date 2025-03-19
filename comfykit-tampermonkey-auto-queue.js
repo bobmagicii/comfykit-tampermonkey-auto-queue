@@ -12,8 +12,9 @@
 if you are not getting the Auto Queue button there are two main things that
 could be going on:
 
-* the @include above needs to be fixed for your port number.
-* the selector properties below need to be fixed for updated comfyui.
+	* the @include above needs to be fixed for your port number.
+	* the selector properties below need to be fixed for updated comfyui.
+
 //*/
 
 'use strict';
@@ -43,8 +44,12 @@ class QueueMgr {
 	// idle before going to give your system some cooldown time or let some
 	// other processes have their way with your hardware.
 
-	queueCheckTime   = 10.0;
+	queueCheckTime   = 2.0;
 	queueIdleTime    = 30.0;
+
+	// and some styles.
+
+	bgToggleBtn = [ '#111111', '#11aa11' ];
 
 	////////////////////////////////
 	// NOT CONFIG //////////////////
@@ -122,13 +127,25 @@ class QueueMgr {
 		////////
 
 		this.elToggleBtn = document.createElement('button');
+		this.elToggleBtn.title = 'Toggle Auto Queue';
 		this.elToggleBtn.classList.add('comfyui-button');
 		this.elToggleBtn.addEventListener('click', this.onClickToggleBtn.bind(this));
+
+		this.elInputIdle = document.createElement('input');
+		this.elInputIdle.title = 'Seconds Idle Before Queue';
+		this.elInputIdle.type = 'number';
+		this.elInputIdle.value = this.queueIdleTime;
+		this.elInputIdle.size = 4;
+		this.elInputIdle.style.textAlign = 'center';
+		this.elInputIdle.classList.add('comfyui-button');
+
+		// this sets the state of the button too.
 		this.turnAutoQueueOff();
 
 		btnGrp = document.createElement('div');
 		btnGrp.classList.add('comfyui-button-group');
 		btnGrp.append(this.elToggleBtn);
+		btnGrp.append(this.elInputIdle);
 
 		this.elMenuBar.prepend(btnGrp);
 
@@ -174,6 +191,9 @@ class QueueMgr {
 
 		this.enabled = true;
 		this.elToggleBtn.innerText = 'AQ: ON';
+		this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[1];
+
+		this.idleTime = parseInt(this.elInputIdle.value) || 0;
 
 		this.tryToQueue();
 
@@ -184,6 +204,7 @@ class QueueMgr {
 
 		this.enabled = false;
 		this.elToggleBtn.innerText = 'AQ: Off';
+		this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[0];
 
 		if(this.timerQueue !== null) {
 			clearInterval(this.timerQueue);
@@ -282,7 +303,7 @@ class QueueMgr {
 		return;
 	};
 
-	static WhenDocumentReady(){
+	static WhenDocumentReady() {
 
 		if(document.readyState != 'loading') {
 			QueueMgr.OnReady();
