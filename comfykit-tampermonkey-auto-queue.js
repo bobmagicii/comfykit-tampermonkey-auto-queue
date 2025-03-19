@@ -12,20 +12,8 @@
 if you are not getting the Auto Queue button there are two main things that
 could be going on:
 
-	* the @include above needs to be fixed for your port number.
-	* the selector properties below need to be fixed for updated comfyui.
-
-comfyui has been updating their ui frequently and i do not update mine very
-frequently at all. because i enjoy my things working when needed. plus sampler
-stuff seems to constantly change which can cause rendering differences in the
-middle of projects. hopefully they do not change the ui too much but in the
-event the console claims the boot failed then the selector properties can be
-updated to try and catch however it has changed today.
-
-last comfy version i personally updated it for:
-	* Git: 65a865918277b9413571c00fa402c5ff0a224225
-	* Date 2024-10-29
-
+* the @include above needs to be fixed for your port number.
+* the selector properties below need to be fixed for updated comfyui.
 //*/
 
 'use strict';
