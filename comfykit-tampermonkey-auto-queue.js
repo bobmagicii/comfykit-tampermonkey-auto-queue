@@ -95,7 +95,7 @@ last comfy version i personally updated it for:
 			this.bootAttempt += 1;
 
 			if(this.bootAttempt > this.bootAttemptMax)
-			throw new Exception(`[QueueMgr.tryToBootup] bailing after ${this.bootAttemptMax} failed attempts.`);
+			throw new Error(`[QueueMgr.tryToBootup] bailing after ${this.bootAttemptMax} failed attempts.`);
 
 			console.log(`[QueueMgr.tryToBootup] attempt ${this.bootAttempt}.`);
 
