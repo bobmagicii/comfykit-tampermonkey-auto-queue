@@ -8,14 +8,21 @@
 // @grant        none
 // ==/UserScript==
 
-/*//
+/*//////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 if you are not getting the Auto Queue button there are two main things that
 could be going on:
 
 	* the @include above needs to be fixed for your port number.
 	* the selector properties below need to be fixed for updated comfyui.
 
-//*/
+last comfy version i personally updated it for:
+	* Git: 65a865918277b9413571c00fa402c5ff0a224225
+	* Date 2024-10-29
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////*/
 
 'use strict';
 
@@ -115,6 +122,7 @@ class QueueMgr {
 			return;
 		}
 
+		this.readConfigValues();
 		this.addElementsToUI();
 
 		return;
@@ -193,8 +201,9 @@ class QueueMgr {
 		this.elToggleBtn.innerText = 'AQ: ON';
 		this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[1];
 
-		this.idleTime = parseInt(this.elInputIdle.value) || 0;
+		this.queueIdleTime = parseInt(this.elInputIdle.value) || 0;
 
+		this.pushIdleTimeSetting();
 		this.tryToQueue();
 
 		return;
@@ -268,6 +277,58 @@ class QueueMgr {
 		////////
 
 		this.numInQueue = numInQueue;
+
+		return;
+	};
+
+	readConfigValues() {
+
+		let val = null;
+
+		////////
+
+		val = this.fetchIdleTimeSetting();
+
+		if(val !== null)
+		this.queueIdleTime = val;
+
+		////////
+
+		return;
+	};
+
+	writeConfigValues() {
+
+		this.pushIdleTimeSetting();
+
+		return;
+	};
+
+	fetchIdleTimeSetting() {
+
+		let val = localStorage.getItem('bobmagicii.comfykit-autoqueue.queueIdleTime', this.queueIdleTime);
+
+		////////
+
+		if(typeof val === 'undefined')
+		return null;
+
+		if(val === null)
+		return null;
+
+		val = parseInt(val);
+
+		if(Number.isNaN(val))
+		return null;
+
+		////////
+
+		return val;
+	};
+
+	pushIdleTimeSetting() {
+
+		localStorage.setItem('bobmagicii.comfykit-autoqueue.queueIdleTime', this.queueIdleTime);
 
 		return;
 	};
