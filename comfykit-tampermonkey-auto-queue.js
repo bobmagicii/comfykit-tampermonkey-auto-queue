@@ -242,6 +242,8 @@ last comfy version i personally updated it for:
 			if(this.getTimeSinceIdle() < this.queueIdleTime)
 			return false;
 
+			////////
+
 			return true;
 		};
 
@@ -265,7 +267,7 @@ last comfy version i personally updated it for:
 			// returning null in that case.
 
 			return document.querySelector(this.selectorQueueNum);
-		}
+		};
 
 		updateQueueInfo(numInQueue) {
 
@@ -329,7 +331,10 @@ last comfy version i personally updated it for:
 
 		pushIdleTimeSetting() {
 
-			localStorage.setItem(QueueMgr.ConfKeyIdleTime, this.queueIdleTime);
+			localStorage.setItem(
+				QueueMgr.ConfKeyIdleTime,
+				this.queueIdleTime
+			);
 
 			return;
 		};
@@ -365,7 +370,6 @@ last comfy version i personally updated it for:
 			console.log('[QueueMgr.OnReady] OK');
 
 			new QueueMgr;
-
 			return;
 		};
 
