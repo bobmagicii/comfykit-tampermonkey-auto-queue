@@ -73,7 +73,7 @@ last comfy version i personally updated it for:
 		timerQueue  = null;
 		numInQueue  = null;
 		idleTime    = null;
-		enabled     = false;
+		enabled     = null;
 
 		////////////////////////////////
 		////////////////////////////////
@@ -81,6 +81,8 @@ last comfy version i personally updated it for:
 		constructor() {
 
 			this.bootAttempt = 0;
+			this.enabled = false;
+
 			this.tryToBootup();
 
 			return;
@@ -131,32 +133,11 @@ last comfy version i personally updated it for:
 
 		addElementsToUI() {
 
-			let btnGrp = null;
+			this.createToggleBtn();
+			this.createInputIdle();
 
-			////////
-
-			this.elToggleBtn = document.createElement('button');
-			this.elToggleBtn.title = 'Toggle Auto Queue';
-			this.elToggleBtn.classList.add('comfyui-button');
-			this.elToggleBtn.addEventListener('click', this.onClickToggleBtn.bind(this));
-
-			this.elInputIdle = document.createElement('input');
-			this.elInputIdle.title = 'Seconds Idle Before Queue';
-			this.elInputIdle.type = 'number';
-			this.elInputIdle.value = this.queueIdleTime;
-			this.elInputIdle.size = 4;
-			this.elInputIdle.style.textAlign = 'center';
-			this.elInputIdle.classList.add('comfyui-button');
-
-			// this sets the state of the button too.
-			this.turnAutoQueueOff();
-
-			btnGrp = document.createElement('div');
-			btnGrp.classList.add('comfyui-button-group');
-			btnGrp.append(this.elToggleBtn);
-			btnGrp.append(this.elInputIdle);
-
-			this.elMenuBar.prepend(btnGrp);
+			this.updateToggleBtn(this.enabled);
+			this.updateMenuBar();
 
 			return;
 		};
@@ -199,8 +180,7 @@ last comfy version i personally updated it for:
 		turnAutoQueueOn() {
 
 			this.enabled = true;
-			this.elToggleBtn.innerText = 'AQ: ON';
-			this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[1];
+			this.updateToggleBtn(this.enabled);
 
 			this.queueIdleTime = parseInt(this.elInputIdle.value) || 0;
 
@@ -213,8 +193,7 @@ last comfy version i personally updated it for:
 		turnAutoQueueOff() {
 
 			this.enabled = false;
-			this.elToggleBtn.innerText = 'AQ: Off';
-			this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[0];
+			this.updateToggleBtn(this.enabled);
 
 			if(this.timerQueue !== null) {
 				clearInterval(this.timerQueue);
@@ -269,6 +248,63 @@ last comfy version i personally updated it for:
 			return document.querySelector(this.selectorQueueNum);
 		};
 
+		createToggleBtn() {
+
+			this.elToggleBtn = document.createElement('button');
+
+			this.elToggleBtn.title = 'Toggle Auto Queue';
+			this.elToggleBtn.classList.add('comfyui-button');
+			this.elToggleBtn.addEventListener('click', this.onClickToggleBtn.bind(this));
+
+			return;
+		};
+
+		createInputIdle() {
+
+			this.elInputIdle = document.createElement('input');
+
+			this.elInputIdle.title = 'Seconds Idle Before Queue';
+			this.elInputIdle.type = 'number';
+			this.elInputIdle.value = this.queueIdleTime;
+			this.elInputIdle.size = 4;
+			this.elInputIdle.style.textAlign = 'center';
+			this.elInputIdle.classList.add('comfyui-button');
+
+			return;
+		};
+
+		updateToggleBtn(state) {
+
+			if(state) {
+				this.elToggleBtn.innerText = 'AQ: ON';
+				this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[1];
+			}
+
+			else {
+				this.elToggleBtn.innerText = 'AQ: Off';
+				this.elToggleBtn.style.backgroundColor = this.bgToggleBtn[0];
+			}
+
+			return;
+		};
+
+		updateMenuBar() {
+
+			let btnGrp = null;
+
+			btnGrp = document.createElement('div');
+			btnGrp.classList.add('comfyui-button-group');
+			btnGrp.append(this.elToggleBtn);
+			btnGrp.append(this.elInputIdle);
+
+			////////
+
+			this.elMenuBar.inerHTML = '';
+			this.elMenuBar.prepend(btnGrp);
+
+			return;
+		};
+
 		updateQueueInfo(numInQueue) {
 
 			// if the queue is empty but was not empty last time then
@@ -283,6 +319,9 @@ last comfy version i personally updated it for:
 
 			return;
 		};
+
+		////////////////////////////////
+		////////////////////////////////
 
 		readConfigValues() {
 
@@ -331,10 +370,7 @@ last comfy version i personally updated it for:
 
 		pushIdleTimeSetting() {
 
-			localStorage.setItem(
-				QueueMgr.ConfKeyIdleTime,
-				this.queueIdleTime
-			);
+			localStorage.setItem(QueueMgr.ConfKeyIdleTime, this.queueIdleTime);
 
 			return;
 		};
@@ -362,9 +398,10 @@ last comfy version i personally updated it for:
 		////////////////////////////////
 		////////////////////////////////
 
-		static get ConfKeyIdleTime() {
-			return 'bobmagicii.comfykit-autoqueue.queueIdleTime';
-		};
+		static get ConfKeyIdleTime() { return 'bobmagicii.comfykit-autoqueue.queueIdleTime'; };
+
+		////////////////////////////////
+		////////////////////////////////
 
 		static OnReady() {
 			console.log('[QueueMgr.OnReady] OK');
