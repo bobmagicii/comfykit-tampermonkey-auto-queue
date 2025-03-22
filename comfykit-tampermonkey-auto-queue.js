@@ -367,7 +367,7 @@ class QueueMgr {
 			.then(function(r) { console.log(r); return r; })
 		);
 
-		return data.queue_pending.length;
+		return data.queue_running.length + data.queue_pending.length;
 	};
 
 	////////////////////////////////
